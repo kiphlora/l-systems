@@ -25,4 +25,15 @@
 		</div>
 	
 </body>
+
+<script>
+	var lsys = LSystem("a");
+	lsys.addRule("a", "a,ba,a");
+	lsys.addRule("b", "fish")
+	lsys.addRule("fish", "")
+	lsys.addRule("ba", "c")
+	lsys.iterate(5);
+	console.log(lsys.generations());
+
+</script>
 </html>
