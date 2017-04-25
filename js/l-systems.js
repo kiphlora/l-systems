@@ -2,6 +2,7 @@ function LSystem(a) {
 
 	var axiom, allGens, currentGenIndex;
 	var ruleset = {};
+	var delim = ",";
 
 	resetLSystem(a === undefined ? "" : a);
 	
@@ -18,14 +19,19 @@ function LSystem(a) {
 		var ruleLen = Object.keys(ruleset);
 		if (ruleLen === 0) return g;
 
-		var g2 = "";
+		g = g.split(delim);
+
+		console.log(g);
+
+		var g2 = [];
 
 		for (var i=0; i<g.length; i++) {
 			var replacement = ruleset[g[i]] === undefined ? g[i] : ruleset[g[i]];
-			g2 = g2.concat(replacement);
+			console.log("replacement: ", replacement);
+			g2.push(replacement);
 		}
 
-		return g2;
+		return g2.join();
 	}
 
 
@@ -67,6 +73,12 @@ function LSystem(a) {
 		return allGens;
 	};
 
+	my.delim = function(d) {
+		if (!arguments.length) return delim;
+		delim = d;
+
+		return my;
+	};
 
 
 	return my;
