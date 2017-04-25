@@ -49,11 +49,12 @@
 	// 	"T": "BCBQ"
 	// })
 
+	// has a really nice sound!
 	lsys.ruleset({
 		"C": "A",
 		"A": "B",
-		"B": "CG",
-		"G": "Q"
+		"B": "C,G",
+		"G": "Gm"
 	})
 	lsys.axiom("C");
 
@@ -76,7 +77,7 @@
 			switch(n) {
 				case "R": notes[i] = "rest"; break;
 				case "P": notes[i] = "Bb" + key + "," + "D" + key + "," + "F" + key; break;
-				case "Q": notes[i] = "C" + key + "," + "Eb" + key + "," + "Gb" + key; break;
+				case "Gm": notes[i] = "C" + key + "," + "Eb" + key + "," + "Gb" + key; break;
 				case "S": notes[i] = "Ab" + key + "," + "C" + key + "," + "Eb" + key; break;
 				case "T": notes[i] = "C" + key + "," + "E" + key + "," + "G#" + key; break;
 				case "U": notes[i] = "C" + key + "," + "E" + key + "," + "G" + key; break;
@@ -100,23 +101,27 @@
 	}
 
 	function combineGenerations(gens) {
-		var all = "";
-		for (var i=0; i<gens.length; i++) {
-			all = all.concat(gens[i]);
-		}
-		return all;
+		// var all = "";
+		// for (var i=0; i<gens.length; i++) {
+		// 	all = all.concat(gens[i]);
+		// }
+		// return all;
+		return gens.join().split(lsys.delim());
 	}
 
 	lsys.iterate(10);
 	var gens = lsys.generations();
-	// console.log(gens);
+	console.log(gens);
 	// var g = gens[gens.length-1];
-	var g = combineGenerations(gens);
-	console.log(g);
+	// var g = combineGenerations(gens);
+	// console.log(g);
 
 	times = ["tripletSixteenth", "tripletEighth", "tripletHalf", "sixteenth", "eighth", "quarter", "half", "whole"];
-	var notes = buildNotes(g, 4);
-	// console.log(notes);
+	console.log(gens.join());
+	console.log(gens.join().split(lsys.delim()));
+	var notes = buildNotes(combineGenerations(gens), 4);
+
+	console.log(notes);
 	var timearray = buildArray(notes.length, "eighth");
 	// var timearray = buildCustomArray(notes.length, function(k){ return times[Math.floor(Math.random() * times.length)]; });
 	// var timearray = buildCustomArray(notes.length, function(k){ return k % Math.floor(Math.random() * 10 + 2) === 0 ? "half" : "eighth"; })
@@ -143,15 +148,4 @@
 </script>
 	
 </body>
-
-<script>
-	var lsys = LSystem("a");
-	lsys.addRule("a", "a,ba,a");
-	lsys.addRule("b", "fish")
-	lsys.addRule("fish", "")
-	lsys.addRule("ba", "c")
-	lsys.iterate(5);
-	console.log(lsys.generations());
-
-</script>
 </html>

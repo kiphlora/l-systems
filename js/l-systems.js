@@ -21,13 +21,10 @@ function LSystem(a) {
 
 		g = g.split(delim);
 
-		console.log(g);
-
 		var g2 = [];
 
 		for (var i=0; i<g.length; i++) {
 			var replacement = ruleset[g[i]] === undefined ? g[i] : ruleset[g[i]];
-			console.log("replacement: ", replacement);
 			g2.push(replacement);
 		}
 
