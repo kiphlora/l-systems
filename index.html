@@ -6,6 +6,8 @@
 	<title>L-Systems</title>
 	<script src="js/d3/d3.min.js"></script>
 	<script src="js/l-systems.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/BandJS/band.min.js"></script>
 	<link rel="stylesheet" href="css/style.css">
 
 <style>
@@ -23,6 +25,122 @@
 	<div class="container">
 		<div class="section">
 		</div>
+
+<script>
+	var lsys = LSystem("C");
+	// var ruleset = { "A": "D",
+	// 								"B": "AC",
+	// 								"C": "ARD",
+	// 								"D": "ER",
+	// 								"E": "FG",
+	// 								"F": "BC",
+	// 								"G": "ACER",
+	// 								"R": ""};
+
+	// lsys.ruleset({ "C": "SETC",
+	// 							 "E": "CGUBPV",
+	// 							 "G": "WQ",
+	// 							 "B": "ECXBA" });
+
+	// lsys.ruleset({
+	// 	"C": "B",
+	// 	"B": "T",
+	// 	"E": "C",
+	// 	"T": "BCBQ"
+	// })
+
+	lsys.ruleset({
+		"C": "A",
+		"A": "B",
+		"B": "CG",
+		"G": "Q"
+	})
+	lsys.axiom("C");
+
+	// lsys.ruleset(ruleset);
+
+	var tempo = 120;
+	var conductor = new BandJS();
+	conductor.setTimeSignature(4,4);
+	conductor.setTempo(tempo);
+	var piano = conductor.createInstrument();
+	var player;
+
+
+
+	function buildNotes(notearray, key) {
+		var notes = [];
+		for (var i=0; i<notearray.length; i++) {
+			var n = notearray[i];
+
+			switch(n) {
+				case "R": notes[i] = "rest"; break;
+				case "P": notes[i] = "Bb" + key + "," + "D" + key + "," + "F" + key; break;
+				case "Q": notes[i] = "C" + key + "," + "Eb" + key + "," + "Gb" + key; break;
+				case "S": notes[i] = "Ab" + key + "," + "C" + key + "," + "Eb" + key; break;
+				case "T": notes[i] = "C" + key + "," + "E" + key + "," + "G#" + key; break;
+				case "U": notes[i] = "C" + key + "," + "E" + key + "," + "G" + key; break;
+				case "V": notes[i] = "G" + key + "," + "B" + key + "," + "D" + key; break;
+				case "W": notes[i] = "D" + key + "," + "F#" + key + "," + "A" + key; break;
+				case "X": notes[i] = "C#" + key + "," + "E" + key + "," + "G" + key; break;
+				default: notes[i] = n + key;
+			}
+		}
+		return notes;
+	}
+
+	function compose(instrument, notearray, timearray) {
+		for (var i=0; i<notearray.length; i++) {
+			var n = notearray[i];
+			var t = timearray[i];
+			// console.log(n);
+			if (n === "rest") instrument.rest(t)
+			else instrument.note(t, n);
+		}
+	}
+
+	function combineGenerations(gens) {
+		var all = "";
+		for (var i=0; i<gens.length; i++) {
+			all = all.concat(gens[i]);
+		}
+		return all;
+	}
+
+	lsys.iterate(10);
+	var gens = lsys.generations();
+	// console.log(gens);
+	// var g = gens[gens.length-1];
+	var g = combineGenerations(gens);
+	console.log(g);
+
+	times = ["tripletSixteenth", "tripletEighth", "tripletHalf", "sixteenth", "eighth", "quarter", "half", "whole"];
+	var notes = buildNotes(g, 4);
+	// console.log(notes);
+	var timearray = buildArray(notes.length, "eighth");
+	// var timearray = buildCustomArray(notes.length, function(k){ return times[Math.floor(Math.random() * times.length)]; });
+	// var timearray = buildCustomArray(notes.length, function(k){ return k % Math.floor(Math.random() * 10 + 2) === 0 ? "half" : "eighth"; })
+	compose(piano, notes, timearray);
+
+	// piano.note("quarter", "C4");
+	// piano.note("quarter", "C4");
+	// piano.note("quarter", "C4");
+	// piano.note("quarter", "C4,F4");
+	// piano.note('tripletHalf','D4,F4,G2,A5')
+ //  piano.note('tripletEighth','D4')
+ //  piano.note('tripletEighth','C4')
+ //  piano.note('tripletEighth','D4', true)
+ //  piano.note('tripletSixteenth','D4')
+ //  piano.note('tripletEighth','D4,Bb4')
+ //  piano.rest('tripletSixteenth')
+ //  piano.note('sixteenth','D4,Bb4')
+ //  piano.note('sixteenth','Eb4,C5')
+ //  piano.note('sixteenth','F4,D5')
+ //  piano.note('sixteenth','G4,Eb5');
+	player = conductor.finish();
+	player.play();
+
+</script>
 	
 </body>
 </html>

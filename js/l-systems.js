@@ -71,3 +71,8 @@ function LSystem(a) {
 
 	return my;
 }
+
+
+
+
+
