@@ -31,7 +31,7 @@ function LSystem(a) {
 			g2.push(replacement);
 		}
 
-		return g2.join();
+		return g2.join(delim);
 	}
 
 
