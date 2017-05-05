@@ -18,9 +18,9 @@ function LSystem(a) {
 	function applyRules(g) {
 		var ruleLen = Object.keys(ruleset);
 		if (ruleLen === 0) return g;
-
+		
 		g = g.split(delim);
-
+		
 		var g2 = [];
 
 		for (var i=0; i<g.length; i++) {
@@ -28,7 +28,7 @@ function LSystem(a) {
 			g2.push(replacement);
 		}
 
-		return g2.join();
+		return g2.join(delim);
 	}
 
 
@@ -74,6 +74,12 @@ function LSystem(a) {
 		if (!arguments.length) return delim;
 		delim = d;
 
+		return my;
+	};
+
+	my.resetAll = function(initAxiom) {
+		ruleset = {};
+		resetLSystem(initAxiom);
 		return my;
 	};
 
