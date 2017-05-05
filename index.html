@@ -7,6 +7,8 @@
 	<script src="js/d3/d3.min.js"></script>
 	<script src="js/l-systems.js"></script>
 	<script src="js/util.js"></script>
+	<script src="js/Vec2.js"></script>
+	<script src="js/Turtle-Graphics.js"></script>
 	<script src="js/BandJS/band.min.js"></script>
 	<link rel="stylesheet" href="css/style.css">
 
@@ -24,6 +26,8 @@
 	</div>
 	<div class="container">
 		<div class="section">
+			<svg></svg>
+			<canvas></canvas>
 		</div>
 
 <script>
@@ -54,9 +58,26 @@
 		"C": "A",
 		"A": "B",
 		"B": "C,G",
-		"G": "Gm"
+		"G": "CM"
 	})
-	lsys.axiom("C");
+	// lsys.axiom("C4");
+	// lsys.delim(" ");
+	// lsys.ruleset({
+	// 	"C4": "A4,C#4,E4 A4",
+	// 	"A4": "C4 G4 B4 A4 F4",
+	// 	"B4": "F#4,B4,Eb4",
+	// 	"F4": "A4"
+	// })
+	
+	// lsys.axiom("C")
+	// lsys.delim(" ")
+	// lsys.ruleset({
+	// 	"C": "CM AM",
+	// 	"CM": "GM B",
+	// 	"B": "G DM",
+	// 	"G": "C A D E F",
+	// 	"C#M": "rest"
+	// })
 
 	// lsys.ruleset(ruleset);
 
@@ -75,15 +96,25 @@
 			var n = notearray[i];
 
 			switch(n) {
-				case "R": notes[i] = "rest"; break;
-				case "P": notes[i] = "Bb" + key + "," + "D" + key + "," + "F" + key; break;
-				case "Gm": notes[i] = "C" + key + "," + "Eb" + key + "," + "Gb" + key; break;
-				case "S": notes[i] = "Ab" + key + "," + "C" + key + "," + "Eb" + key; break;
-				case "T": notes[i] = "C" + key + "," + "E" + key + "," + "G#" + key; break;
-				case "U": notes[i] = "C" + key + "," + "E" + key + "," + "G" + key; break;
-				case "V": notes[i] = "G" + key + "," + "B" + key + "," + "D" + key; break;
-				case "W": notes[i] = "D" + key + "," + "F#" + key + "," + "A" + key; break;
-				case "X": notes[i] = "C#" + key + "," + "E" + key + "," + "G" + key; break;
+				case "rest": notes[i] = "rest"; break;
+
+				// major chords
+				case "CM": notes[i] = vecOp(["C","E","G"], function(a,b){ return a + key; }).join(); break;
+				case "GM": notes[i] = vecOp(["G","B","D"], function(a,b){ return a + key; }).join(); break;
+				case "DM": notes[i] = vecOp(["D","F#","A"], function(a,b){ return a + key; }).join(); break;
+				case "AM": notes[i] = vecOp(["A","C#","E"], function(a,b){ return a + key; }).join(); break;
+				case "EM": notes[i] = vecOp(["E","G#","B"], function(a,b){ return a + key; }).join(); break;
+				case "BM": notes[i] = vecOp(["B","D#","F#"], function(a,b){ return a + key; }).join(); break;
+				case "F#M": notes[i] = vecOp(["F#","A#","C#"], function(a,b){ return a + key; }).join(); break;
+				// case "C#M": notes[i] = vecOp(["C#","E#","G#"], function(a,b){ return a + key; }).join(); break;
+				case "FM": notes[i] = vecOp(["F","A","C"], function(a,b){ return a + key; }).join(); break;
+				case "BbM": notes[i] = vecOp(["Bb","D","F"], function(a,b){ return a + key; }).join(); break;
+				case "EbM": notes[i] = vecOp(["Eb","G","Bb"], function(a,b){ return a + key; }).join(); break;
+				case "AbM": notes[i] = vecOp(["Ab","C","Eb"], function(a,b){ return a + key; }).join(); break;
+				case "DbM": notes[i] = vecOp(["Db","F","Ab"], function(a,b){ return a + key; }).join(); break;
+				case "GbM": notes[i] = vecOp(["Gb","Bb","Db"], function(a,b){ return a + key; }).join(); break;
+				// case "CbM": notes[i] = vecOp(["Cb","Eb","Gb"], function(a,b){ return a + key; }).join(); break;
+
 				default: notes[i] = n + key;
 			}
 		}
@@ -106,7 +137,7 @@
 		// 	all = all.concat(gens[i]);
 		// }
 		// return all;
-		return gens.join().split(lsys.delim());
+		return gens.join(lsys.delim()).split(lsys.delim());
 	}
 
 	lsys.iterate(10);
@@ -117,8 +148,9 @@
 	// console.log(g);
 
 	times = ["tripletSixteenth", "tripletEighth", "tripletHalf", "sixteenth", "eighth", "quarter", "half", "whole"];
-	console.log(gens.join());
-	console.log(gens.join().split(lsys.delim()));
+	console.log(gens.join(lsys.delim()));
+	console.log(gens.join(lsys.delim()).split(lsys.delim()));
+	// var notes = buildNotes(combineGenerations(gens), 4);
 	var notes = buildNotes(combineGenerations(gens), 4);
 
 	console.log(notes);
@@ -144,6 +176,62 @@
  //  piano.note('sixteenth','G4,Eb5');
 	player = conductor.finish();
 	player.play();
+
+	// var l = LSystem("F")
+	// l.addRule("F", "F,c,F,ac,F,ac,F,c,F");
+	// l.iterate(5);
+
+	var l = LSystem("F,c,G,c,G");
+	l.addRule("F", "F,c,G,ac,F,ac,G,c,F");
+	l.addRule("G", "G,G");
+	l.iterate(10);
+
+	var gens = l.generations();
+	var g = gens[4];
+	console.log(g);
+	var turtle = TurtleMap().turnAngle(Vec2.degToRad(120)).startLoc(new Vec2(0,0)).moveDist(7).startAngle(Vec2.degToRad(0));
+	var points = turtle(g).points();
+
+	console.log(g);
+	console.log(points);
+
+	// var svg = d3.select("svg").attr("width", 900).attr("height", 600).style("border", "1px solid gray");
+
+	var canvas = d3.select('canvas').node();
+	canvas.width = 900;
+	canvas.height = 900;
+	var ctx = canvas.getContext("2d");
+
+	function drawTurtle(ctx, path) {
+		ctx.clearRect(0,0,900,900);
+		ctx.strokeStyle = '#000';
+  	ctx.lineWidth = 1;
+  	ctx.fillStyle = 'transparent';
+
+  	var p = new Path2D(path);
+  	ctx.stroke(p);
+  	ctx.fill(p);
+	}
+
+	turtle.centerPoints(canvas.width/2, canvas.height/2);
+	drawTurtle(ctx, turtle.path());
+
+	// var path = svg.append("path");
+
+	window.addEventListener("mousemove", function(e) {
+		var mousecoords = [e.pageX, e.pageY];
+		var angleProp = Vec2.degToRad(360 * mousecoords[0] / 900);
+		var moveProp = 15 * mousecoords[1] / 900;
+		turtle = TurtleMap().turnAngle(angleProp).moveDist(moveProp);
+		points = turtle(g).points();
+		turtle.centerPoints(canvas.width/2, canvas.height/2);
+		// path.attr("d", turtle.path()).attr("fill", "none").attr("stroke", "black");
+		drawTurtle(ctx, turtle.path());
+
+	})
+
+	// path.attr("d", turtle.path()).attr("fill", "none").attr("stroke", "black");
+
 
 </script>
 	
