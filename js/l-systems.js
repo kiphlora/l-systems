@@ -1,10 +1,9 @@
-function LSystem(a) {
+function LSystem(axiom) {
 
-	var axiom, allGens, currentGenIndex;
-	var ruleset = {};
-	var delim = ",";
+	var allGens, currentGenIndex;
+	var rules = [];
 
-	resetLSystem(a === undefined ? "" : a);
+	resetLSystem(axiom === undefined ? "" : axiom);
 	
 	function my(){}
 
@@ -16,30 +15,31 @@ function LSystem(a) {
 	}
 
 	function applyRules(g) {
-		var ruleLen = Object.keys(ruleset);
-		if (ruleLen === 0) return g;
-
-		g = g.split(delim);
-
-		console.log(g);
-
-		var g2 = [];
-
+		var sentence = "";
 		for (var i=0; i<g.length; i++) {
-			var replacement = ruleset[g[i]] === undefined ? g[i] : ruleset[g[i]];
-			console.log("replacement: ", replacement);
-			g2.push(replacement);
+			var c = g.charAt(i);
+			var matchFound = false;
+			for (var r=0; r<rules.length; r++) {
+				if (c === rules[r].key) {
+					sentence += rules[r].replacement;
+					matchFound = true;
+					break;
+				}
+			}
+			if (!matchFound) {
+				sentence += c;
+			}
 		}
 
-		return g2.join(delim);
+		return sentence;
 	}
 
 
 	// resets the L-system, but keeps the ruleset
-	my.axiom = function(v) {
+	my.axiom = function(a) {
 		if (!arguments.length) return axiom;
 
-		resetLSystem(v);
+		resetLSystem(a);
 
 		return my;
 	};
@@ -56,15 +56,15 @@ function LSystem(a) {
 	};
 
 	my.addRule = function(key, replacement) {
-		ruleset[key] = replacement;
+		rules.push({ key: key, replacement: replacement });
 
 		return my;
 	};
 
-	my.ruleset = function(ruleObject) {
-		if (!arguments.length) return ruleset;
+	my.rules = function(rulesArray) {
+		if (!arguments.length) return rules;
 
-		ruleset	= ruleObject;
+		rules	= ruleArray;
 
 		return my;
 	};
@@ -73,11 +73,8 @@ function LSystem(a) {
 		return allGens;
 	};
 
-	my.delim = function(d) {
-		if (!arguments.length) return delim;
-		delim = d;
-
-		return my;
+	my.currentGeneration = function() {
+		return allGens[currentGenIndex-1];
 	};
 
 

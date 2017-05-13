@@ -6,6 +6,9 @@
 	<title>L-Systems</title>
 	<script src="js/d3/d3.min.js"></script>
 	<script src="js/l-systems.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/Vec2.js"></script>
+	<script src="js/Turtle.js"></script>
 	<link rel="stylesheet" href="css/style.css">
 
 <style>
@@ -23,17 +26,73 @@
 	<div class="container">
 		<div class="section">
 		</div>
-	
+		<div>
+			<canvas id="canvas" width=900 height=800></canvas>
+		</div>
 </body>
 
 <script>
-	var lsys = LSystem("a");
-	lsys.addRule("a", "a,ba,a");
-	lsys.addRule("b", "fish")
-	lsys.addRule("fish", "")
-	lsys.addRule("ba", "c")
-	lsys.iterate(5);
+
+	var angle = 25;
+	var len = 7;
+	var iterations = 5;
+
+	var lsys = LSystem("F");
+	lsys.addRule("F", "FF+[+F-F-F]-[-F+F+F]");
+	
+	lsys.iterate(iterations);
 	console.log(lsys.generations());
+
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+
+	console.log(lsys.currentGeneration());
+
+	window.addEventListener("keydown", function(e){
+	  if (e.keyCode == '38') {
+	  	// up arrow
+	  }
+	  else if (e.keyCode == '40') {
+	    // down arrow
+	  }
+	  else if (e.keyCode == '37') {
+	  	// left arrow
+	  	angle -= 1;
+	  }
+	  else if (e.keyCode == '39') {
+	  	// right arrow
+	  	angle += 1;
+	  }
+	  resetCanvasMatrix(ctx);
+	  ctx.clearRect(0,0,canvas.width,canvas.height);
+	  drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+	})
+	drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+	// var t = turtlePoints(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height-10), len, Vec2.degToRad(25));
+	// t = turtleOffset(t, canvas.width/2, canvas.height/2);
+
+	window.addEventListener("click", function(e){
+		if (!running) queue();
+		else dequeue();
+		running = !running;
+	})
+	var raf;
+	var running = false;
+	function queue() {
+		raf = window.requestAnimationFrame(loop);
+	}
+	function dequeue() {
+		window.cancelAnimationFrame(raf);
+	}
+
+	function loop() {
+		raf = window.requestAnimationFrame(loop);
+		angle += 0.1;
+		resetCanvasMatrix(ctx);
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+	}
+
 
 </script>
 </html>
