@@ -12,22 +12,165 @@
 	<link rel="stylesheet" href="css/style.css">
 
 <style>
-	
+	canvas {
+		/*border: 1px solid #eee;*/
+		/*padding-bottom: 20px;*/
+		margin-bottom: 20px;
+	}
+	#canvases {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+	}
+	.gen-text {
+		text-align: center;
+	}
+	.gen-grammar {
+		font-size: 0.5em;
+	}
+
+	#canvases div {
+		border: 1px solid #eee;
+		margin: 5px;
+		padding: 5px;
+	}
+	h3 {
+		color: #ccc;
+		margin-top: 60px;
+	}
+	ul {
+		list-style: none;
+	}
+	li span {
+		margin-right: 25px;
+		font-weight: bold;
+	}
+	.angle-text {
+		padding: 5px;
+		margin: 0;
+		font-size: 0.6em;
+	}
+	.gen-text {
+		font-size: 0.85em;
+		padding: 5px;
+		margin: 0;
+		border-bottom: 1px solid #efefef;
+	}
+
 	
 </style>
 </head>
 <body>
 
 	<div class="header">
-		<p class="main-title">L-Systems</p>
+		<p class="main-title">Fractal Grammar</p>
 		<p class="main-subtitle">a look at lindenmayer systems</p>
 		<p class="authors">by Brett Moran</p>
 	</div>
 	<div class="container">
 		<div class="section">
+			<h3>
+				Introduction
+			</h3>
+			<p>
+				Lindenmayer Systems use a "find and replace" strategy to form complex, fractal sentences. They start simple, with a letter, or string of letters, called the "axiom". Each "generation" is constructed using rules that tell the system which letters to look for and what should replace them.
+			</p>
+			<p>
+				For example, let's take a simple example: Lindenmayer's own model of the growth of algae.
+			</p>
+			<p>
+				Starting with the axiom: A
+				<br>
+				And using the rules: (A → AB) & (B → A)
+			</p>
+			<p>
+				Generation 0: A <br>
+				Generation 1: AB <br>
+				Generation 2: ABA <br>
+				Generation 3: ABAAB <br>
+				Generation 4: ABAABABA <br>
+				Generation 5: ABAABABAABAAB <br>
+				...
+			</p>
+			<h3>
+				How does this work, exactly?
+			</h3>
+			<p>
+				To answer this, let's look at each generation, one step at a time:
+			</p>
+			<p>
+				Generation 0: A <br>
+				This is what we started with. It's our axiom.
+			</p>
+			<p>
+				Generation 1: AB <br>
+				We take each letter from the previous generation (Gen 0), and use the rules to replace that letter. <br>
+				So, A becomes AB
+			</p>
+			<p>
+				Generation 2: ABA <br>
+				There are two letters from Gen 1. We'll replace each of them separately, and then combine them. <br>
+				A becomes AB <br>
+				B becomes A <br>
+				Resulting in ABA
+			</p>
+			<p>
+				Generation 3: ABAAB <br>
+				A becomes AB <br>
+				B becomes A <br>
+				A becomes AB <br>
+				Which leaves us with ABAAB <br>
+				...
+			</p>
+			<p>
+				This process can continue for as many generations as you want!
+			</p>
+			<h3>
+				Algorithmic Botany
+			</h3>
+			<p>
+				As exciting as modeling the growth of algae is, it's not all that visually appealing to stare at strings of characters all day long. And, while we could visualize the growth of the algae, let's look at something a bit more exciting: Fractal Trees! 
+			</p>
+			<p>
+				If you look at a tree, there is a sense of self-similarity to it; each branch looks like a scaled-down version of a trunk with its own branches jutting out it.
+			</p>
+			<p>
+				Below, you'll find a series of visualizations for each generation of an algorithmic tree. This particular tree was built using: <br>
+				Axiom: F <br>
+				Rule: (F → FF+[+F-F-F]-[-F+F+F])
+			</p>
+			<p>
+				As you can see below the drawings, there is a string of characters, unintelligible to you or me, but perfect for telling a computer how to draw. The computer uses something called Turtle Graphics to construct the tree. Each letter is an instruction that tells the turtle to do something:
+			</p>
+			<ul>
+				<li><span>F</span> "move forward" a certain distance</li>
+				<li><span>+</span> "rotate clockwise" by a certain angle</li>
+				<li><span>-</span> "rotate counterclockwise" by a certain angle</li>
+				<li><span>[</span> "remember" where it was and how it was oriented</li>
+				<li><span>]</span> "recall" the most recently stored location and orientation</li>
+			</ul>
+			<p>
+				Note that each generation's "move forward" distance is different. The distance is smaller for latter generations because most of the tree would be drawn off-screen otherwise.
+			</p>
+			<p>
+				The colors show when each branch was drawn. Red branches were drawn first. Yellow branches toward the end. And the orange colors sometime in the middle.
+			</p>
+			<h3>
+				Instructions
+			</h3>
+			<p>
+				Use the <span class="notes">left or right arrow keys</span> to change the <span class="notes">angle.</span> <br>
+				<span class="notes">Click anywhere</span> to <span class="notes">reset the angle.</span>
+			</p>
+			
+
 		</div>
-		<div>
-			<canvas id="canvas" width=900 height=800></canvas>
+		<div id="canvases">
+		</div>
+
+		<div class="footer">
+			<p>Thanks so much for checking this out!</p>
+			<p>This experiment is based on Aristid Lindenmayer's work. For starters, you can find more information on Wikipedia's <a href="https://en.wikipedia.org/wiki/L-system">L-System</a> page.</p>
 		</div>
 </body>
 
@@ -35,16 +178,50 @@
 
 	var angle = 25;
 	var len = 7;
-	var iterations = 5;
+	var iterations = 4;
+	var yoff = -10;
 
 	var lsys = LSystem("F");
 	lsys.addRule("F", "FF+[+F-F-F]-[-F+F+F]");
 	
 	lsys.iterate(iterations);
+	var generations = lsys.generations();
+
 	console.log(lsys.generations());
 
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext("2d");
+	var d3canvases = d3.select("#canvases").selectAll(".canvases").data(generations)
+		.enter().append("div").each(function(a,b){
+			var me = d3.select(this);
+			me.append("p").attr("class", "gen-text").text("Generation " + b); 
+			me.append("p").attr("class", "angle-text").html("Angle: " + angle + "&deg");
+			me.append("canvas");
+			me.append("p").attr("class", "gen-grammar").text(a);
+		});
+
+
+	var l = 200;
+	var canvases = [];
+	var contexts = [];
+	var lengths = calcLengths(generations.length, l);
+	function calcLengths(numGens, initialLen) {
+		var lens = [];
+		for (var i=0; i<numGens; i++) {
+			scaling = (i+1) * (i+1) * 1.5;
+			lens[i] = initialLen / scaling;
+		}
+		return lens;
+	}	
+	
+	
+	d3canvases.each(function(d,i){ 
+		canvases[i] = d3.select(this).select("canvas").node();
+		canvases[i].width = ((i - 3) * 40) + window.innerWidth / generations.length;
+		canvases[i].height = 340;
+		contexts[i] = canvases[i].getContext("2d");
+	})
+
+	// var canvas = document.getElementById("canvas");
+	// var ctx = canvas.getContext("2d");
 
 	console.log(lsys.currentGeneration());
 
@@ -63,19 +240,41 @@
 	  	// right arrow
 	  	angle += 1;
 	  }
-	  resetCanvasMatrix(ctx);
-	  ctx.clearRect(0,0,canvas.width,canvas.height);
-	  drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+
+	  angle = mod(angle, 360);
+	  // resetCanvasMatrix(ctx);
+	  // ctx.clearRect(0,0,canvas.width,canvas.height);
+	  // drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+	  for (var i=0; i<contexts.length; i++) {
+	  	d3canvases.selectAll(".angle-text").html("Angle: " + angle + "&deg");
+	  	resetCanvasMatrix(contexts[i]);
+	  	contexts[i].clearRect(0,0,canvases[i].width,canvases[i].height);
+			drawTurtle(contexts[i], generations[i], new Vec2(canvases[i].width/2, canvases[i].height + yoff), lengths[i], Vec2.degToRad(angle));
+		}
 	})
-	drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+
+	for (var i=0; i<contexts.length; i++) {
+		drawTurtle(contexts[i], generations[i], new Vec2(canvases[i].width/2, canvases[i].height + yoff), lengths[i], Vec2.degToRad(angle));
+	}
 	// var t = turtlePoints(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height-10), len, Vec2.degToRad(25));
 	// t = turtleOffset(t, canvas.width/2, canvas.height/2);
 
+	// window.addEventListener("click", function(e){
+	// 	if (!running) queue();
+	// 	else dequeue();
+	// 	running = !running;
+	// })
+
 	window.addEventListener("click", function(e){
-		if (!running) queue();
-		else dequeue();
-		running = !running;
-	})
+		// reset the angle, etc.
+		angle = 25;
+		for (var i=0; i<contexts.length; i++) {
+	  	resetCanvasMatrix(contexts[i]);
+	  	contexts[i].clearRect(0,0,canvases[i].width,canvases[i].height);
+			drawTurtle(contexts[i], generations[i], new Vec2(canvases[i].width/2, canvases[i].height + yoff), lengths[i], Vec2.degToRad(angle));
+		}
+	});
+
 	var raf;
 	var running = false;
 	function queue() {
@@ -88,9 +287,14 @@
 	function loop() {
 		raf = window.requestAnimationFrame(loop);
 		angle += 0.1;
-		resetCanvasMatrix(ctx);
-		ctx.clearRect(0,0,canvas.width,canvas.height);
-		drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+		// resetCanvasMatrix(ctx);
+		// ctx.clearRect(0,0,canvas.width,canvas.height);
+		// drawTurtle(ctx, lsys.currentGeneration(), new Vec2(canvas.width/2, canvas.height), len, Vec2.degToRad(angle));
+		for (var i=0; i<contexts.length; i++) {
+	  	resetCanvasMatrix(contexts[i]);
+	  	contexts[i].clearRect(0,0,canvases[i].width,canvases[i].height);
+			drawTurtle(contexts[i], generations[i], new Vec2(canvases[i].width/2, canvases[i].height), lengths[i], Vec2.degToRad(angle));
+		}
 	}
 
 
