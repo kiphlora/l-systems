@@ -5,7 +5,7 @@ function drawTurtle(ctx, sentence, initialPoint, length, angle) {
 	var translations = [];
 	ctx.translate(initialPoint.x, initialPoint.y);
 	ctx.strokeStyle = "rgba(0,0,0,0.01)";
-	var p = 0;
+	var p = -1/fs;
 
 	for (var i=0; i<sentence.length; i++) {
 		var c = sentence.charAt(i);
@@ -19,6 +19,10 @@ function drawTurtle(ctx, sentence, initialPoint, length, angle) {
 				p += 1/fs;
 				ctx.strokeStyle = "rgba(194," + Math.floor(p * 220) + ",40,0.3)";
 				ctx.stroke();
+				break;
+
+			case "f":
+				ctx.translate(0, -length);
 				break;
 
 			case "+":
