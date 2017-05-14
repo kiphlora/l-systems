@@ -268,6 +268,7 @@
 	window.addEventListener("click", function(e){
 		// reset the angle, etc.
 		angle = 25;
+		d3canvases.selectAll(".angle-text").html("Angle: " + angle + "&deg");
 		for (var i=0; i<contexts.length; i++) {
 	  	resetCanvasMatrix(contexts[i]);
 	  	contexts[i].clearRect(0,0,canvases[i].width,canvases[i].height);
