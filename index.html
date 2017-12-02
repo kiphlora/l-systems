@@ -9,7 +9,11 @@
 	<script src="js/util.js"></script>
 	<script src="js/Vec2.js"></script>
 	<script src="js/Turtle.js"></script>
-	<link rel="stylesheet" href="css/style.css">
+	
+	<link href="https://fonts.googleapis.com/css?family=Dosis:200" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/project-theme.css">
+	<link rel="stylesheet" type="text/css" href="css/page-style.css">
+	<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css">
 
 <style>
 	canvas {
@@ -62,13 +66,16 @@
 </head>
 <body>
 
-	<div class="header">
-		<p class="main-title">Fractal Grammar</p>
-		<p class="main-subtitle">a look at lindenmayer systems</p>
-		<p class="authors">by Brett Moran</p>
-	</div>
 	<div class="container">
-		<div class="section">
+		<header class="hero-header">
+			<div class="my-name">Fractal Grammar</div>
+			<div class="nav">
+				<a href="http://www.kiphlora.com"><div class="portfolio-nav"><i class="fa fa-home" aria-hidden="true"></i></div></a>
+			</div>
+		</header>
+
+		<div class="hero-content-wrapper">
+			<div class="intro-content">
 			<h3>
 				Introduction
 			</h3>
@@ -165,13 +172,18 @@
 			
 
 		</div>
-		<div id="canvases">
-		</div>
+		<div id="canvases"></div>
 
-		<div class="footer">
-			<p>Thanks so much for checking this out!</p>
-			<p>This experiment is based on Aristid Lindenmayer's work. For starters, you can find more information on Wikipedia's <a href="https://en.wikipedia.org/wiki/L-system">L-System</a> page.</p>
 		</div>
+		<footer class="hero-footer">
+			<div class="footer-info">
+			<a href="https://github.com/kiphlora/l-systems"><div><i class="fa fa-github" aria-hidden="true"></i> L-Systems</div></a>
+			<a href="mailto:kiphlora@gmail.com" target="_top"><div><i class="fa fa-envelope" aria-hidden="true"></i>
+ kiphlora@gmail.com</div></a>
+			<p>&copy 2017 Brett Moran</p>
+		</div>
+		</footer>
+  </div>
 </body>
 
 <script>
@@ -195,7 +207,7 @@
 			me.append("p").attr("class", "gen-text").text("Generation " + b); 
 			me.append("p").attr("class", "angle-text").html("Angle: " + angle + "&deg");
 			me.append("canvas");
-			me.append("p").attr("class", "gen-grammar").text(a);
+			me.append("p").attr("class", "gen-grammar").style("line-height", "2").style("font-family", "Verdana").style("font-size", "10px").style("color", "#999").text(a);
 		});
 
 
